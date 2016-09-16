@@ -30,10 +30,6 @@ Plug 'Shougo/vimfiler.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
-" Autocomplete ---------------------------------------------------------------------------------------------------------
-"Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-completer' }
-Plug 'othree/html5.vim'
-
 " Snippets -------------------------------------------------------------------------------------------------------------
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -44,27 +40,26 @@ Plug 'joonty/vdebug'
 Plug 'beanworks/vim-phpfmt'
 Plug 'phpvim/phpcd.vim', { 'for': 'php' , 'do': 'composer update' }
 " Plug 'shawncplus/phpcomplete.vim'
+Plug 'arnaud-lb/vim-php-namespace'
+
+" Java -----------------------------------------------------------------------------------------------------------------
+Plug 'artur-shaik/vim-javacomplete2'
 
 " Syntax
-Plug 'mustache/vim-mustache-handlebars'
-Plug 'pangloss/vim-javascript'
-Plug 'fatih/vim-go'
 Plug 'kchmck/vim-coffee-script'
-Plug 'mxw/vim-jsx'
-Plug 'othree/html5.vim'
 Plug 'hail2u/vim-css3-syntax'
-Plug 'groenewege/vim-less'
 Plug 'tpope/vim-markdown'
 
 " Elixir ---------------------------------------------------------------------------------------------------------------
 Plug 'slashmili/alchemist.vim'
-Plug 'elixir-lang/vim-elixir'
 Plug 'larrylv/ycm-elixir'
 
 " Ruby -----------------------------------------------------------------------------------------------------------------
-Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
 Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'tpope/vim-rake'
+Plug 'thoughtbot/vim-rspec'
+Plug 'ecomba/vim-ruby-refactoring'
 
 " Git ------------------------------------------------------------------------------------------------------------------
 Plug 'tpope/vim-fugitive'
@@ -82,6 +77,9 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-obsession'
 Plug 'mhinz/vim-startify'
 Plug 'jacob-ogre/vim-syncr'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'gorodinskiy/vim-coloresque'
 
 " Text Objects ---------------------------------------------------------------------------------------------------------
 Plug 'tomtom/tcomment_vim'
@@ -101,6 +99,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'skwp/vim-html-escape', { 'on': ['HtmlEscape', 'HtmlUnEscape'] }
 Plug 'mileszs/ack.vim'
+Plug 'matze/vim-move'
 
 " Misc -----------------------------------------------------------------------------------------------------------------
 Plug 'Yggdroot/indentLine'
@@ -112,10 +111,34 @@ Plug 'bling/vim-airline'
 call plug#end()
 
 " ======================================================================================================================
+" => Leader
+" ======================================================================================================================
+
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
+
+" Fast saving
+nmap <leader>w :w!<cr>
+
+" jk is escape
+inoremap jk <esc>
+
+" ======================================================================================================================
 " => Mappings
 " ======================================================================================================================
 
 imap <C-Space> <C-X><C-O>
+
+"" Split
+noremap <Leader>h :<C-u>split<CR>
+noremap <Leader>v :<C-u>vsplit<CR>
+
+"" Git
+noremap <Leader>gs :Gstatus<CR>
+noremap <Leader>gb :Gblame<CR>
+noremap <Leader>gd :Gvdiff<CR>
 
 " ======================================================================================================================
 " => General Settings
@@ -158,6 +181,9 @@ let $LANG='en'
 set langmenu=en
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
+
+" Line/Column marker
+:set colorcolumn=80
 
 " Turn on the WiLd menu
 set wildmenu
@@ -287,6 +313,24 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
+" vim-move <C-k> and <C-j>
+let g:move_key_modifier = 'C'
+
+" ======================================================================================================================
+" => Abbreviations
+" ======================================================================================================================
+" no one is really happy until you have this shortcuts
+cnoreabbrev W! w!
+cnoreabbrev Q! q!
+cnoreabbrev Qall! qall!
+cnoreabbrev Wq wq
+cnoreabbrev Wa wa
+cnoreabbrev wQ wq
+cnoreabbrev WQ wq
+cnoreabbrev W w
+cnoreabbrev Q q
+cnoreabbrev Qall qall
+
 " ======================================================================================================================
 " => Visual mode related
 " ======================================================================================================================
@@ -316,21 +360,6 @@ map <leader>s? z=
 " Move vertically by visual line
 nnoremap j gj
 nnoremap k gk
-
-" ======================================================================================================================
-" => Leader
-" ======================================================================================================================
-
-" With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-let mapleader = "\<Space>"
-let g:mapleader = "\<Space>"
-
-" Fast saving
-nmap <leader>w :w!<cr>
-
-" jk is escape
-inoremap jk <esc>
 
 " ======================================================================================================================
 " => Session Settings
@@ -755,3 +784,23 @@ endfunction
 "let g:startify_custom_header = s:center_header(split(system('tips | '. (s:mac ? 'cowthink' : 'cowsay -f apt')), '\n'))
 let g:startify_custom_header =
   \ map(split(system('fortune | cowsay'), '\n'), '"   ". v:val') + ['','']
+
+" ======================================================================================================================
+" => PHP Namespaces
+" ======================================================================================================================
+
+function! IPhpInsertUse()
+    call PhpInsertUse()
+    call feedkeys('a',  'n')
+endfunction
+autocmd FileType php inoremap <Leader>u <Esc>:call IPhpInsertUse()<CR>
+autocmd FileType php noremap <Leader>u :call PhpInsertUse()<CR>
+
+" ======================================================================================================================
+" => The Silver Searcher
+" ======================================================================================================================
+if executable('ag')
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  let g:ctrlp_use_caching = 0
+endif
