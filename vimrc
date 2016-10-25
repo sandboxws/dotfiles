@@ -18,6 +18,8 @@ Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'farfanoide/vim-facebook'
 Plug 'chriskempson/base16-vim'
 Plug 'Slava/vim-colors-tomorrow'
+Plug 'joshdick/onedark.vim'
+Plug 'raphamorim/lucario'
 
 " Shougo ---------------------------------------------------------------------------------------------------------------
 Plug 'Shougo/unite.vim'
@@ -39,8 +41,8 @@ Plug 'ervandew/supertab'
 Plug 'joonty/vdebug'
 Plug 'beanworks/vim-phpfmt'
 Plug 'phpvim/phpcd.vim', { 'for': 'php' , 'do': 'composer update' }
-" Plug 'shawncplus/phpcomplete.vim'
 Plug 'arnaud-lb/vim-php-namespace'
+" Plug 'shawncplus/phpcomplete.vim'
 
 " Java -----------------------------------------------------------------------------------------------------------------
 Plug 'artur-shaik/vim-javacomplete2'
@@ -80,6 +82,7 @@ Plug 'jacob-ogre/vim-syncr'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'gorodinskiy/vim-coloresque'
+Plug 'mbbill/undotree'
 
 " Text Objects ---------------------------------------------------------------------------------------------------------
 Plug 'tomtom/tcomment_vim'
@@ -100,6 +103,7 @@ Plug 'tpope/vim-surround'
 Plug 'skwp/vim-html-escape', { 'on': ['HtmlEscape', 'HtmlUnEscape'] }
 Plug 'mileszs/ack.vim'
 Plug 'matze/vim-move'
+Plug 'easymotion/vim-easymotion'
 
 " Misc -----------------------------------------------------------------------------------------------------------------
 Plug 'Yggdroot/indentLine'
@@ -139,6 +143,21 @@ noremap <Leader>v :<C-u>vsplit<CR>
 noremap <Leader>gs :Gstatus<CR>
 noremap <Leader>gb :Gblame<CR>
 noremap <Leader>gd :Gvdiff<CR>
+
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Opens fzf files search
+map <C-p> :Files<CR>
+
+" Clears search highkights
+nnoremap <C-/> :set hlsearch!<CR>
+
+" Undotree
+" nnoremap <D-u> :UndotreeToggle<CR>
 
 " ======================================================================================================================
 " => General Settings
@@ -183,7 +202,7 @@ source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
 " Line/Column marker
-:set colorcolumn=80
+:set colorcolumn=120
 
 " Turn on the WiLd menu
 set wildmenu
@@ -219,13 +238,14 @@ nnoremap <leader><space> :nohlsearch<CR>
 set incsearch
 
 " Don't redraw while executing macros (good performance config)
-set lazyredraw
+" set lazyredraw
 
 " For regular expressions turn magic on
 set magic
 
 " Show relative numbers
-set relativenumber number
+" set relativenumber number
+set number
 
 " No annoying sound on errors
 set noerrorbells
@@ -234,7 +254,7 @@ set t_vb=
 set tm=500
 
 " Highlight current line
-" set cursorline
+set cursorline
 
 " Enable folding
 set foldenable
@@ -265,7 +285,7 @@ syntax enable
 
 set background=dark
 
-colorscheme OceanicNext
+colorscheme lucario
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -314,7 +334,7 @@ set si "Smart indent
 set wrap "Wrap lines
 
 " vim-move <C-k> and <C-j>
-let g:move_key_modifier = 'C'
+" let g:move_key_modifier = 'C'
 
 " ======================================================================================================================
 " => Abbreviations
@@ -393,8 +413,6 @@ autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType java set omnifunc=javacomplete#Complete
-"autocmd FileType go set omnifunc=gocomplete#Complete
-" autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
 
 
 " ======================================================================================================================
@@ -408,6 +426,9 @@ autocmd FileType java set omnifunc=javacomplete#Complete
 " ======================================================================================================================
 " A standard type: PEAR, PHPCS, PSR1, PSR2, Squiz and Zend
 let g:phpfmt_standard = 'PSR2'
+
+" Disable autoformatting on save
+let g:phpfmt_autosave = 0
 
 " ======================================================================================================================
 " => GitGutter Symbols
@@ -804,3 +825,16 @@ if executable('ag')
   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
   let g:ctrlp_use_caching = 0
 endif
+
+" ======================================================================================================================
+" => Undotree
+" ======================================================================================================================
+if has("persistent_undo")
+  set undodir=~/.undodir/
+  set undofile
+endif
+
+" ======================================================================================================================
+" => PIV
+" ======================================================================================================================
+" let g:DisableAutoPHPFolding = 1
